@@ -67,6 +67,7 @@ const (
 	{{define "invite"}}{{template "base" .}}/invite{{end}}
 	{{define "hide"}}{{template "base" .}}/hide{{end}}
 	{{define "leave"}}{{template "base" .}}/leave{{end}}
+	{{define "freeze"}}{{template "base" .}}/freeze{{end}}
 
 	{{template "base"}}
 	{{template "members"}}
@@ -74,6 +75,7 @@ const (
 	{{template "invite"}}
 	{{template "hide"}}
 	{{template "leave"}}
+	{{template "freeze"}}
 	`
 
 	SendbirdURLChannelMetadataTemplate = `

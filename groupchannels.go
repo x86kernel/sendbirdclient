@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/blazingorb/sendbirdclient/templates"
+	"github.com/x86kernel/sendbirdclient/templates"
 )
 
 type GroupChannel struct {

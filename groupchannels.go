@@ -378,7 +378,7 @@ type LeaveFromAGroupChannelRequest struct {
 }
 
 func (c *Client) FreezeAnGroupChannel(channelURL string, r *FreezeAnGroupChannelRequest) (GroupChannel, error) {
-	pathString, err := templates.GetGroupChannelTemplate(openChannelsTemplateData{ChannelURL: url.PathEscape(channelURL)}, templates.SendbirdURLGroupChannelsLeaveWithChannelURL)
+	pathString, err := templates.GetGroupChannelTemplate(groupChannelsTemplateData{ChannelURL: url.PathEscape(channelURL)}, templates.SendbirdURLGroupChannelsFreezeWithChannelURL)
 	if err != nil {
 		return GroupChannel{}, err
 	}

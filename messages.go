@@ -1,13 +1,21 @@
 package sendbirdclient
 
+import (
+	"net/url"
+
+	"github.com/x86kernel/sendbirdclient/templates"
+)
+
+// TODO: add response
+
 type baseMessage struct {
-	MessageID  string `json:"message_id"`
-	Type       string `json:"type"`
-	User       User   `json:"user"`
-	CustomType string `json:"custom_type"`
-	ChannelURL string `json:"channel_url"`
-	CreatedAt  int64  `json:"created_at"`
-	UpdatedAt  int64  `json:"updated_at"`
+	MessageID   string `json:"message_id"`
+	MessageType string `json:"message_type"`
+	User        User   `json:"user"`
+	CustomType  string `json:"custom_type"`
+	ChannelURL  string `json:"channel_url"`
+	CreatedAt   int64  `json:"created_at"`
+	UpdatedAt   int64  `json:"updated_at"`
 }
 
 type TextMessage struct {
@@ -43,4 +51,22 @@ type messagesTemplateData struct {
 	ChannelType string
 	ChannelURL  string
 	MessageID   string
+}
+
+func (c *Client) SendAdminMessage(channelType, channelURL string, r *AdminMessage) error {
+	pathString, err := templates.GetMessagesTemplate(messagesTemplateData{ChannelType: channelType, ChannelURL: url.PathEscape(channelURL)}, templates.SendbirdURLMessagesWithChannelTypeAndChannelURL)
+
+	if err != nil {
+		return err
+	}
+
+	r.MessageType = "ADMM"
+
+	parsedURL := c.PrepareUrl(pathString)
+
+	if err := c.postAndReturnJSON(parsedURL, r, nil); err != nil {
+		return err
+	}
+
+	return nil
 }

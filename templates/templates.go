@@ -146,7 +146,7 @@ const (
 	SendbirdURLGroupChannelsInviteWithChannelURL           templateKeysGroupChannels = `invite`
 	SendbirdURLGroupChannelsHideWithChannelURL             templateKeysGroupChannels = `hide`
 	SendbirdURLGroupChannelsLeaveWithChannelURL            templateKeysGroupChannels = `leave`
-	SendbirdURLGroupChannelsFreezeWithChannelURL           templateKeysOpenChannels  = `freeze`
+	SendbirdURLGroupChannelsFreezeWithChannelURL           templateKeysGroupChannels = `freeze`
 
 	//Channel Metadata
 	SendbirdURLChannelMetadataWithChannelTypeAndChannelURL              templateKeysChannelMetadata = `chMeta`

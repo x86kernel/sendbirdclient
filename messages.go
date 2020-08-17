@@ -6,16 +6,14 @@ import (
 	"github.com/x86kernel/sendbirdclient/templates"
 )
 
-// TODO: add response
-
 type baseMessage struct {
-	MessageID   string `json:"message_id"`
-	MessageType string `json:"message_type"`
-	User        User   `json:"user"`
-	CustomType  string `json:"custom_type"`
-	ChannelURL  string `json:"channel_url"`
-	CreatedAt   int64  `json:"created_at"`
-	UpdatedAt   int64  `json:"updated_at"`
+	MessageID  string `json:"message_id"`
+	Type       string `json:"type"`
+	User       User   `json:"user"`
+	CustomType string `json:"custom_type"`
+	ChannelURL string `json:"channel_url"`
+	CreatedAt  int64  `json:"created_at"`
+	UpdatedAt  int64  `json:"updated_at"`
 }
 
 type TextMessage struct {
@@ -53,20 +51,60 @@ type messagesTemplateData struct {
 	MessageID   string
 }
 
-func (c *Client) SendAdminMessage(channelType, channelURL string, r *AdminMessage) error {
-	pathString, err := templates.GetMessagesTemplate(messagesTemplateData{ChannelType: channelType, ChannelURL: url.PathEscape(channelURL)}, templates.SendbirdURLMessagesWithChannelTypeAndChannelURL)
+type sendMessageRequest struct {
+	MessageType string `json:"message_type"`
+	UserId      string `json:"user_id"`
+	Message     string `json:"message"`
 
-	if err != nil {
-		return err
+	CustomType string `json:"custom_type"`
+	Data       string `json:"data"`
+}
+
+func (r *sendMessageRequest) params() url.Values {
+	q := make(url.Values)
+
+	if r.MessageType != "" {
+		q.Set("message_type", r.MessageType)
 	}
 
-	r.MessageType = "ADMM"
+	if r.UserId != "" {
+		q.Set("user_id", string(r.UserId))
+	}
+
+	if r.Message != "" {
+		q.Set("message", string(r.Message))
+	}
+
+	if r.CustomType != "" {
+		q.Set("custom_type", string(r.CustomType))
+	}
+
+	return q
+}
+
+type sendMessageResponse struct {
+	MessageType string `json:"message_type"`
+	UserId      string `json:"user_id"`
+	Message     string `json:"message"`
+}
+
+func (c *Client) SendMessage(channelType, channelURL string, r *sendMessageRequest) (sendMessageResponse, error) {
+	pathString, err := templates.GetMessagesTemplate(messagesTemplateData{
+		ChannelType: url.PathEscape(channelType),
+		ChannelURL:  url.PathEscape(channelURL),
+	}, templates.SendbirdURLMessagesMarkAsReadWithChannelTypeAndChannelURL)
+	if err != nil {
+		return sendMessageResponse{}, err
+	}
 
 	parsedURL := c.PrepareUrl(pathString)
 
-	if err := c.postAndReturnJSON(parsedURL, r, nil); err != nil {
-		return err
+	result := sendMessageResponse{}
+
+	raw := r.params().Encode()
+	if err := c.deleteAndReturnJSON(parsedURL, raw, &result); err != nil {
+		return sendMessageResponse{}, err
 	}
 
-	return nil
+	return result, nil
 }

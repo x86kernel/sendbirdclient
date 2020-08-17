@@ -51,7 +51,7 @@ type messagesTemplateData struct {
 	MessageID   string
 }
 
-type sendMessageRequest struct {
+type SendMessageRequest struct {
 	MessageType string `json:"message_type"`
 	UserId      string `json:"user_id"`
 	Message     string `json:"message"`
@@ -60,7 +60,7 @@ type sendMessageRequest struct {
 	Data       string `json:"data"`
 }
 
-func (r *sendMessageRequest) params() url.Values {
+func (r *SendMessageRequest) params() url.Values {
 	q := make(url.Values)
 
 	if r.MessageType != "" {
@@ -88,7 +88,7 @@ type sendMessageResponse struct {
 	Message     string `json:"message"`
 }
 
-func (c *Client) SendMessage(channelType, channelURL string, r *sendMessageRequest) (sendMessageResponse, error) {
+func (c *Client) SendMessage(channelType, channelURL string, r *SendMessageRequest) (sendMessageResponse, error) {
 	pathString, err := templates.GetMessagesTemplate(messagesTemplateData{
 		ChannelType: url.PathEscape(channelType),
 		ChannelURL:  url.PathEscape(channelURL),

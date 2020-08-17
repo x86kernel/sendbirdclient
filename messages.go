@@ -92,7 +92,7 @@ func (c *Client) SendMessage(channelType, channelURL string, r *SendMessageReque
 	pathString, err := templates.GetMessagesTemplate(messagesTemplateData{
 		ChannelType: url.PathEscape(channelType),
 		ChannelURL:  url.PathEscape(channelURL),
-	}, templates.SendbirdURLMessagesMarkAsReadWithChannelTypeAndChannelURL)
+	}, templates.SendbirdURLMessagesWithChannelTypeAndChannelURL)
 	if err != nil {
 		return sendMessageResponse{}, err
 	}
@@ -101,8 +101,7 @@ func (c *Client) SendMessage(channelType, channelURL string, r *SendMessageReque
 
 	result := sendMessageResponse{}
 
-	raw := r.params().Encode()
-	if err := c.deleteAndReturnJSON(parsedURL, raw, &result); err != nil {
+	if err := c.postAndReturnJSON(parsedURL, r, &result); err != nil {
 		return sendMessageResponse{}, err
 	}
 
